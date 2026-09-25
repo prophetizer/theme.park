@@ -22,12 +22,46 @@
  * on purpose: they carry meaning, not decoration.
  */
 
-/* Page. Only html/body are painted, so a configured `background:` image still shows
-   through; without one, this is the page colour. */
+/* Page. Homepage paints `html, body, #__next` with its own `--bg-color` in an unlayered
+   rule, and #__next covers the whole viewport, so all three need the theme colour
+   (`body #__next` out-specifies Homepage's bare `#__next`). A configured `background:`
+   image sits above these and still shows; without one, this is the page colour. */
 html,
-body {
+body,
+body #__next {
   background-color: var(--main-bg-color);
   color: var(--text);
+}
+
+/* Catch-all for the dark-mode palette utilities Homepage v2.4.0 actually uses, so
+   widget internals without a hook class (Plex/Tautulli stream rows, Glances text, the
+   resource figures) follow the theme too. Without this a light theme leaves them
+   light-on-light. Same specificity as a class, and unlayered, so they beat Tailwind;
+   the hook-class rules further down come later and win where both apply. */
+[class*="dark:text-theme-200"],
+[class*="dark:text-theme-300"],
+[class*="dark:text-white"] {
+  color: var(--text);
+}
+
+[class*="dark:text-theme-400"] {
+  color: var(--text-muted);
+}
+
+[class*="dark:bg-theme-800"] {
+  background-color: var(--main-bg-color);
+}
+
+[class*="dark:bg-theme-900/"] {
+  background-color: color-mix(in srgb, var(--main-bg-color) 70%, transparent);
+}
+
+[class*="dark:bg-white/10"] {
+  background-color: color-mix(in srgb, var(--text) 10%, transparent);
+}
+
+[class*="dark:border-theme-200"] {
+  border-color: color-mix(in srgb, var(--text-muted) 50%, transparent);
 }
 
 #footer,
