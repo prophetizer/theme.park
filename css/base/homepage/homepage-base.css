@@ -1,0 +1,168 @@
+/* Homepage (gethomepage.dev) base stylesheet for theme.park.
+ *
+ * Load it alongside a theme-options file, the same as any other app:
+ *
+ *   <link rel="stylesheet" href="https://<your-theme-park>/css/base/homepage/homepage-base.css">
+ *   <link rel="stylesheet" href="https://<your-theme-park>/css/theme-options/nord.css">
+ *
+ * or through the traefik-themepark plugin with `app: homepage`.
+ *
+ * Written against Homepage v2.4.0. Two things about Homepage shape this file:
+ *
+ * - Its palette is Tailwind utilities reading `--color-50`..`--color-900` as bare
+ *   "R G B" triplets (`rgb(var(--color-200) / 1)`). theme.park's variables are hex,
+ *   and CSS can't turn a hex variable into a triplet, so the palette can't just be
+ *   remapped. Instead this styles Homepage's own hook classes (`service-card`,
+ *   `service-block`, `information-widget-*`, ...), which it keeps stable for custom.css.
+ * - Tailwind v4 puts every utility in `@layer utilities`, and unlayered rules beat
+ *   layered ones regardless of specificity. So nothing here needs `!important` or deep
+ *   structural selectors, and a user's own custom.css still loads after this and wins.
+ *
+ * Status colours (healthy/unhealthy badges, ping and site-monitor dots) are left alone
+ * on purpose: they carry meaning, not decoration.
+ */
+
+/* Page. Only html/body are painted, so a configured `background:` image still shows
+   through; without one, this is the page colour. */
+html,
+body {
+  background-color: var(--main-bg-color);
+  color: var(--text);
+}
+
+#footer,
+#version,
+#revalidate {
+  color: var(--text-muted);
+}
+
+/* Group headings */
+.service-group-name,
+.bookmark-group-name {
+  color: var(--text-hover, var(--text));
+}
+
+/* Service cards. Translucent, so Homepage's cardBlur and background image still work. */
+.service-card {
+  background-color: color-mix(in srgb, var(--modal-bg-color) 78%, transparent);
+  color: var(--text);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25);
+}
+
+.service-card:hover {
+  background-color: color-mix(in srgb, color-mix(in srgb, var(--modal-bg-color) 88%, rgb(var(--accent-color))) 85%, transparent);
+}
+
+.service-name,
+.service-title-text {
+  color: var(--text);
+}
+
+.service-description {
+  color: var(--text-muted);
+}
+
+.service-card a:hover .service-title-text,
+.service-card a:hover .service-name {
+  color: var(--link-color-hover, var(--text-hover));
+}
+
+/* Widget stat blocks inside cards: value on top, label underneath */
+.service-block {
+  background-color: color-mix(in srgb, var(--main-bg-color) 70%, transparent);
+  color: var(--text);
+}
+
+.service-block > div:first-child {
+  color: var(--text);
+}
+
+.service-block > div:last-child {
+  color: var(--text-muted);
+}
+
+/* Docker status strip under a card; the status text keeps its own colour */
+.docker-status {
+  background-color: color-mix(in srgb, var(--main-bg-color) 60%, transparent);
+}
+
+/* Information widgets across the top (resources, search, datetime, greeting, ...) */
+.widget-container,
+#information-widgets,
+#information-widgets-right {
+  color: var(--text);
+}
+
+.resource-icon {
+  color: rgb(var(--accent-color));
+}
+
+.information-widget-resource .resource-usage {
+  background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
+}
+
+.information-widget-resource .resource-usage > div {
+  background-color: rgb(var(--accent-color));
+}
+
+.information-widget-search input {
+  background-color: var(--modal-bg-color);
+  color: var(--text);
+  border: 1px solid rgba(var(--accent-color), 0.35);
+}
+
+.information-widget-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.information-widget-search input:focus {
+  outline: none;
+  border-color: rgb(var(--accent-color));
+}
+
+/* Dropdowns: search-provider picker, quick-launch results */
+[id^="headlessui-listbox-options"],
+[id^="headlessui-combobox-options"] {
+  background-color: var(--drop-down-menu-bg, var(--modal-bg-color));
+  color: var(--text);
+}
+
+/* Tabs (layout tabs, when configured) */
+#tabs button {
+  color: var(--text-muted);
+}
+
+#tabs button[aria-selected="true"],
+#tabs button:hover {
+  color: var(--text-hover, var(--text));
+  background-color: rgba(var(--accent-color), 0.15);
+}
+
+/* Bookmarks */
+.bookmark-list .bookmark a,
+.bookmark a {
+  background-color: var(--modal-bg-color);
+}
+
+.bookmark a:hover {
+  background-color: color-mix(in srgb, var(--modal-bg-color) 88%, rgb(var(--accent-color)));
+}
+
+.bookmark-icon {
+  color: rgb(var(--accent-color));
+}
+
+.bookmark-name,
+.bookmark-text {
+  color: var(--text);
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(var(--accent-color), 0.35);
+}
+
+/* Scrollbars */
+#inner_wrapper {
+  scrollbar-color: rgba(var(--accent-color), 0.5) transparent;
+}
