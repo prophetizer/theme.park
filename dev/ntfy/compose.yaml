@@ -1,0 +1,39 @@
+name: themepark-ntfy-dev
+services:
+  css:
+    image: python:3.12-alpine
+    working_dir: /site
+    command: ["python", "/serve.py"]
+    ports: ["127.0.0.1:18871:8000"]
+    volumes:
+      - ../../css:/site/css:ro
+      - ../../resources:/site/resources:ro
+      - ../serve.py:/serve.py:ro
+  ntfy:
+    image: binwiederhier/ntfy:${NTFY_TAG:-v2.28.0}
+    command: ["serve"]
+    environment:
+      NTFY_BASE_URL: http://localhost:18093
+      NTFY_CACHE_FILE: /var/cache/ntfy/cache.db
+      NTFY_CACHE_DURATION: 168h
+      NTFY_BEHIND_PROXY: "true"
+    ports: ["127.0.0.1:18092:80"]
+    volumes:
+      - cache:/var/cache/ntfy
+  seed:
+    image: python:3.12-alpine
+    depends_on: [ntfy]
+    command: ["python", "-u", "/seed.py"]
+    volumes: ["./seed.py:/seed.py:ro"]
+    restart: "no"
+  proxy:
+    image: nginx:stable-alpine
+    depends_on: [css, ntfy]
+    environment:
+      TP_THEME: ${TP_THEME:-dracula}
+      TP_THEME_FOLDER: ${TP_THEME_FOLDER:-theme-options}
+    ports: ["127.0.0.1:18093:8080"]
+    volumes:
+      - ./default.conf.template:/etc/nginx/templates/default.conf.template:ro
+volumes:
+  cache:

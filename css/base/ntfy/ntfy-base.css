@@ -1,0 +1,257 @@
+/* ntfy (ntfy.sh) web app base stylesheet for theme.park.
+ *
+ * Load it alongside a theme-options file, the same as any other app:
+ *
+ *   <link rel="stylesheet" href="https://<your-theme-park>/css/base/ntfy/ntfy-base.css">
+ *   <link rel="stylesheet" href="https://<your-theme-park>/css/theme-options/nord.css">
+ *
+ * or through the traefik-themepark plugin with `app: ntfy`. The plugin only
+ * touches HTML responses, so ntfy's JSON/stream API on the same host is left
+ * alone.
+ *
+ * Written against ntfy v2.28.0's web app, which is Material UI (MUI v5). Two
+ * things about it shape this file:
+ *
+ * - MUI styles each component with generated single-class rules (.css-xxxx),
+ *   injected at runtime, plus two-class rules for states (.css-xxxx.Mui-selected).
+ *   Its stable hook classes are `Mui<Component>-<slot>`. Every rule here is
+ *   prefixed with `body` so it out-ranks MUI's own without `!important`, and a
+ *   user's own overrides can still win.
+ * - ntfy has its own light/dark setting (Settings > Appearance). Everything is
+ *   set explicitly rather than per-mode, so the theme applies the same either way.
+ *   MUI's dark mode also lays a white gradient over elevated surfaces (dialogs,
+ *   menus); `background:` shorthand clears it.
+ *
+ * Status colours (priority icons, error text, the warning banner's icon) are left
+ * alone on purpose: they carry meaning, not decoration.
+ *
+ * Checked with ntfy v2.28.0 and seeded notifications (every priority, tags,
+ * action buttons, markdown) in every official theme option, with ntfy in its
+ * default light mode: main view, notification cards, the drawer and the
+ * message bar; plus night-owl and catppuccin-latte with ntfy in dark mode.
+ */
+
+/* Page and main column. theme.park backgrounds may be gradients, so these use
+   the `background` shorthand, never background-color. `main[class]`: MUI styles
+   <main> through a generated class, which a bare element selector can't beat. */
+body,
+body #root,
+body main,
+body main[class] {
+  background: var(--main-bg-color);
+  color: var(--text);
+}
+
+/* Top bar. ntfy paints its green gradient on the Toolbar inside the AppBar,
+   not on the AppBar itself, so that has to go transparent. */
+body .MuiAppBar-root {
+  background: var(--modal-header-color);
+  color: var(--text);
+}
+
+body .MuiAppBar-root .MuiToolbar-root {
+  background: transparent;
+}
+
+/* Navigation drawer (docked on desktop, modal on phones). */
+body .MuiDrawer-paper {
+  background: var(--modal-bg-color);
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--text) 12%, transparent);
+}
+
+/* Cards (notifications, settings sections), dialogs, menus and popovers. */
+body .MuiCard-root,
+body .MuiDialog-paper {
+  background: var(--modal-bg-color);
+  color: var(--text);
+}
+
+body .MuiMenu-paper,
+body .MuiPopover-paper,
+body .MuiAutocomplete-paper {
+  background: var(--drop-down-menu-bg);
+  color: var(--text);
+}
+
+/* The "Subscribed topics" heading in the drawer: MUI paints sticky list
+   subheaders with the paper colour of ntfy's own mode (white in light mode). */
+body .MuiListSubheader-root {
+  background: var(--modal-bg-color);
+  color: var(--text-muted);
+}
+
+/* The message bar at the foot of a topic: a Paper holding the text field. */
+body .MuiPaper-root:has(> .MuiTextField-root) {
+  background: var(--modal-bg-color);
+  color: var(--text);
+}
+
+body .MuiInputBase-input::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+body .MuiDivider-root {
+  border-color: color-mix(in srgb, var(--text) 12%, transparent);
+}
+
+/* Text. */
+body .MuiTypography-root,
+body .MuiListItemText-primary,
+body .MuiDialogTitle-root,
+body .MuiFormControlLabel-label {
+  color: inherit;
+}
+
+body .MuiListItemText-secondary,
+body .MuiDialogContentText-root,
+body .MuiFormHelperText-root,
+body .MuiTypography-colorTextSecondary {
+  color: var(--text-muted);
+}
+
+body .MuiListItemIcon-root,
+body .MuiIconButton-colorInherit {
+  color: var(--text);
+}
+
+/* Links, in page text and in notification bodies. */
+body .MuiLink-root,
+body main a {
+  color: var(--link-color);
+  text-decoration-color: currentColor;
+}
+
+body .MuiLink-root:hover,
+body main a:hover {
+  color: var(--link-color-hover);
+}
+
+/* Sidebar entries: hover and the selected topic. */
+body .MuiListItemButton-root:hover {
+  background-color: color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+body .MuiListItemButton-root.Mui-selected,
+body .MuiListItemButton-root.Mui-selected:hover {
+  background-color: rgba(var(--accent-color), 0.18);
+}
+
+/* Buttons. Primary text buttons ("Add user", "Send", "Subscribe") are text, so
+   they take the theme's link colour -- the colour a theme promises is readable
+   as text. The accent (often a pale tint on light themes) is kept for fills,
+   borders and checkmarks. Contained buttons take the theme's button colours. MUI v6 marks them
+   `MuiButton-text MuiButton-colorPrimary`; v5 used `MuiButton-textPrimary`.
+   Both are matched. */
+body .MuiButton-text.MuiButton-colorPrimary,
+body .MuiButton-outlined.MuiButton-colorPrimary,
+body .MuiButton-textPrimary,
+body .MuiButton-outlinedPrimary {
+  color: var(--link-color);
+}
+
+body .MuiButton-outlined.MuiButton-colorPrimary,
+body .MuiButton-outlinedPrimary {
+  border-color: rgba(var(--accent-color), 0.5);
+}
+
+body .MuiButton-contained.MuiButton-colorPrimary,
+body .MuiButton-containedPrimary {
+  background: var(--button-color);
+  color: var(--button-text);
+}
+
+body .MuiButton-contained.MuiButton-colorPrimary:hover,
+body .MuiButton-containedPrimary:hover {
+  background: var(--button-color-hover);
+  color: var(--button-text-hover);
+}
+
+body .MuiButton-text.MuiButton-colorPrimary:hover,
+body .MuiButton-textPrimary:hover,
+body .MuiIconButton-root:hover {
+  background-color: rgba(var(--accent-color), 0.1);
+}
+
+/* Plain icon buttons (the sound preview's play button, card menus): ntfy colours
+   them for its own mode, which can vanish on a theme of the opposite mode. */
+body .MuiIconButton-root:not(.MuiIconButton-colorPrimary):not(.MuiIconButton-colorError) {
+  color: var(--text);
+}
+
+/* Form fields: standard (underlined) and outlined inputs, selects, labels. */
+body .MuiInputBase-root,
+body .MuiSelect-select,
+body .MuiSelect-icon {
+  color: var(--text);
+}
+
+body .MuiInput-underline::before {
+  border-bottom-color: color-mix(in srgb, var(--text-muted) 70%, transparent);
+}
+
+body .MuiInput-underline:hover:not(.Mui-disabled)::before {
+  border-bottom-color: var(--text);
+}
+
+body .MuiInput-underline::after {
+  border-bottom-color: rgb(var(--accent-color));
+}
+
+body .MuiOutlinedInput-notchedOutline {
+  border-color: color-mix(in srgb, var(--text-muted) 60%, transparent);
+}
+
+body .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: rgb(var(--accent-color));
+}
+
+body .MuiInputLabel-root,
+body .MuiFormLabel-root {
+  color: var(--text-muted);
+}
+
+body .MuiInputLabel-root.Mui-focused,
+body .MuiFormLabel-root.Mui-focused {
+  color: var(--link-color);
+}
+
+body .MuiCheckbox-root.Mui-checked,
+body .MuiRadio-root.Mui-checked,
+body .MuiSwitch-switchBase.Mui-checked {
+  color: rgb(var(--accent-color));
+}
+
+body .MuiMenuItem-root.Mui-selected,
+body .MuiMenuItem-root.Mui-selected:hover {
+  background-color: rgba(var(--accent-color), 0.18);
+}
+
+/* The "notifications are blocked" banner and other alerts: the icon keeps its
+   status colour, but the text and a tinted panel follow the theme, since ntfy
+   picks a dark or light panel for its own mode and not the theme's. */
+body .MuiAlert-standard {
+  background-color: rgba(237, 108, 2, 0.12);   /* MUI's warning orange, faint: works on light and dark */
+  color: var(--text);
+}
+
+body .MuiAlert-standard .MuiAlertTitle-root,
+body .MuiAlert-standard .MuiAlert-message {
+  color: var(--text);
+}
+
+/* Tags on notifications and in the publish dialog. */
+body .MuiChip-root.MuiChip-colorDefault {
+  background-color: color-mix(in srgb, var(--text) 12%, transparent);
+  color: var(--text);
+}
+
+/* Progress bars (attachments uploading). */
+body .MuiLinearProgress-root {
+  background-color: rgba(var(--accent-color), 0.25);
+}
+
+body .MuiLinearProgress-bar {
+  background-color: rgb(var(--accent-color));
+}

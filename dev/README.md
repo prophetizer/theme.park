@@ -14,6 +14,14 @@ mod with local CSS. Its seed script creates paused dummy downloads.
 `Cache-Control: no-store`. The Compose service mounts the checkout's CSS and
 resources read-only. File edits appear on refresh without a build.
 
+The [Grafana setup](grafana/README.md) provisions a sample dashboard on
+Grafana's TestData source and injects CSS through nginx. Its notes cover the
+stable hooks Grafana 13 offers and why chart contents stay unthemed.
+
+The [ntfy setup](ntfy/README.md) seeds sample notifications and injects CSS
+through nginx without touching ntfy's JSON, SSE and WebSocket API, which
+shares the web app's paths.
+
 There is no shared nginx proxy or theme.park image setup yet. Add and test one
 when an app task needs it, using the guidance below.
 

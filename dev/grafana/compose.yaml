@@ -1,0 +1,34 @@
+name: themepark-grafana-dev
+services:
+  css:
+    image: python:3.12-alpine
+    working_dir: /site
+    command: ["python", "/serve.py"]
+    ports: ["127.0.0.1:18870:8000"]
+    volumes:
+      - ../../css:/site/css:ro
+      - ../../resources:/site/resources:ro
+      - ../serve.py:/serve.py:ro
+  grafana:
+    image: grafana/grafana:${GRAFANA_TAG:-13.2.3}
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_NEWS_NEWS_FEED_ENABLED: "false"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/provisioning/dashboards/sample.json
+    ports: ["127.0.0.1:18090:3000"]
+    volumes:
+      - ./provisioning:/etc/grafana/provisioning:ro
+  proxy:
+    image: nginx:stable-alpine
+    depends_on: [css, grafana]
+    environment:
+      TP_THEME: ${TP_THEME:-dracula}
+      TP_THEME_FOLDER: ${TP_THEME_FOLDER:-theme-options}
+    ports: ["127.0.0.1:18091:8080"]
+    volumes:
+      - ./default.conf.template:/etc/nginx/templates/default.conf.template:ro
