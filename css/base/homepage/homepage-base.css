@@ -25,10 +25,17 @@
 /* Page. Homepage paints `html, body, #__next` with its own `--bg-color` in an unlayered
    rule, and #__next covers the whole viewport, so all three need the theme colour
    (`body #__next` out-specifies Homepage's bare `#__next`). A configured `background:`
-   image sits above these and still shows; without one, this is the page colour. */
+   image sits above these and still shows; without one, this is the page colour.
+   Every rule that takes --main-bg-color or --modal-bg-color sets `background:` first:
+   in a gradient theme those hold a linear-gradient(), which `background-color` (and
+   color-mix) can't use, so on its own the line was dropped and Homepage fell back to
+   its near-black (seen 2026-10-25 with Under Blue Green). The shorthand paints the
+   gradient as an image; for a solid theme the `background-color` line after it then
+   sets the colour exactly as before, translucency included. */
 html,
 body,
 body #__next {
+  background: var(--main-bg-color);
   background-color: var(--main-bg-color);
   color: var(--text);
 }
@@ -49,10 +56,12 @@ body #__next {
 }
 
 [class*="dark:bg-theme-800"] {
+  background: var(--main-bg-color);
   background-color: var(--main-bg-color);
 }
 
 [class*="dark:bg-theme-900/"] {
+  background: var(--main-bg-color);
   background-color: color-mix(in srgb, var(--main-bg-color) 70%, transparent);
 }
 
@@ -78,12 +87,14 @@ body #__next {
 
 /* Service cards. Translucent, so Homepage's cardBlur and background image still work. */
 .service-card {
+  background: var(--modal-bg-color);
   background-color: color-mix(in srgb, var(--modal-bg-color) 78%, transparent);
   color: var(--text);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.25);
 }
 
 .service-card:hover {
+  background: var(--modal-bg-color);
   background-color: color-mix(in srgb, color-mix(in srgb, var(--modal-bg-color) 88%, rgb(var(--accent-color))) 85%, transparent);
 }
 
@@ -103,6 +114,7 @@ body #__next {
 
 /* Widget stat blocks inside cards: value on top, label underneath */
 .service-block {
+  background: var(--main-bg-color);
   background-color: color-mix(in srgb, var(--main-bg-color) 70%, transparent);
   color: var(--text);
 }
@@ -117,6 +129,7 @@ body #__next {
 
 /* Docker status strip under a card; the status text keeps its own colour */
 .docker-status {
+  background: var(--main-bg-color);
   background-color: color-mix(in srgb, var(--main-bg-color) 60%, transparent);
 }
 
@@ -140,6 +153,7 @@ body #__next {
 }
 
 .information-widget-search input {
+  background: var(--modal-bg-color);
   background-color: var(--modal-bg-color);
   color: var(--text);
   border: 1px solid rgba(var(--accent-color), 0.35);
@@ -157,6 +171,7 @@ body #__next {
 /* Dropdowns: search-provider picker, quick-launch results */
 [id^="headlessui-listbox-options"],
 [id^="headlessui-combobox-options"] {
+  background: var(--modal-bg-color);
   background-color: var(--drop-down-menu-bg, var(--modal-bg-color));
   color: var(--text);
 }
@@ -175,10 +190,12 @@ body #__next {
 /* Bookmarks */
 .bookmark-list .bookmark a,
 .bookmark a {
+  background: var(--modal-bg-color);
   background-color: var(--modal-bg-color);
 }
 
 .bookmark a:hover {
+  background: var(--modal-bg-color);
   background-color: color-mix(in srgb, var(--modal-bg-color) 88%, rgb(var(--accent-color)));
 }
 
