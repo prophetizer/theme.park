@@ -31,7 +31,10 @@
    color-mix) can't use, so on its own the line was dropped and Homepage fell back to
    its near-black (seen 2026-10-25 with Under Blue Green). The shorthand paints the
    gradient as an image; for a solid theme the `background-color` line after it then
-   sets the colour exactly as before, translucency included. */
+   sets the colour exactly as before, translucency included. The translucent washes
+   that sit inside a card (list rows, .service-block, .docker-status) don't: painting
+   the page gradient there striped every calendar row across the card's own panel
+   gradient, so in a gradient theme they stay transparent and show the card. */
 html,
 body,
 body #__next {
@@ -61,7 +64,6 @@ body #__next {
 }
 
 [class*="dark:bg-theme-900/"] {
-  background: var(--main-bg-color);
   background-color: color-mix(in srgb, var(--main-bg-color) 70%, transparent);
 }
 
@@ -114,7 +116,6 @@ body #__next {
 
 /* Widget stat blocks inside cards: value on top, label underneath */
 .service-block {
-  background: var(--main-bg-color);
   background-color: color-mix(in srgb, var(--main-bg-color) 70%, transparent);
   color: var(--text);
 }
@@ -129,7 +130,6 @@ body #__next {
 
 /* Docker status strip under a card; the status text keeps its own colour */
 .docker-status {
-  background: var(--main-bg-color);
   background-color: color-mix(in srgb, var(--main-bg-color) 60%, transparent);
 }
 
